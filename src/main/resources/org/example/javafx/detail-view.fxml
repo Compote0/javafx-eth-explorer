@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="detailRoot" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafx.controller.DetailViewController">
+   <top>
+      <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #f3f4f6; -fx-padding: 15;">
+         <children>
+            <Button fx:id="backButton" text="← Back to Dashboard" styleClass="back-button" />
+            <Label fx:id="detailTitle" text="Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true">
+         <VBox spacing="15" style="-fx-background-color: #f3f4f6;">
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+               <VBox fx:id="detailContent" spacing="10" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;">
+                  <!-- content will be filled dynamically -->
+               </VBox>
+            </children>
+         </VBox>
+      </ScrollPane>
+   </center>
+</BorderPane>
+

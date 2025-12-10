@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.shape.*?>
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafx.controller.DashboardController" stylesheets="@dashboard.css" style="-fx-font-smoothing-type: gray;">
+   <top>
+      <!-- header with background and search -->
+      <VBox fx:id="headerBox" style="-fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6);" spacing="10">
+         <padding>
+            <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />
+         </padding>
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="20">
+               <children>
+                  <Label text="ETH Explorer" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+                  <Label fx:id="ethPriceLabel" text="ETH: Loading..." style="-fx-text-fill: white; -fx-font-size: 18px;" />
+                  <Label fx:id="ethChangeLabel" text="" />
+               </children>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+               <children>
+                  <TextField fx:id="searchField" promptText="Search transactions, blocks, addresses..." style="-fx-background-color: white; -fx-pref-width: 600px; -fx-pref-height: 40px; -fx-background-radius: 4;" />
+                  <Button fx:id="searchButton" text="Search" styleClass="search-button" style="-fx-pref-height: 40px; -fx-pref-width: 100px;" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+         <VBox spacing="20" style="-fx-background-color: #f3f4f6;" maxWidth="Infinity">
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+               <!-- data of the global market part -->
+               <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" spacing="10" maxWidth="Infinity">
+                  <children>
+                     <Label text="Global Market Data" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                     <HBox spacing="30">
+                        <children>
+                           <VBox spacing="5">
+                              <children>
+                                 <Label text="Total Market Cap" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                                 <StackPane>
+                                    <children>
+                                       <Label fx:id="globalMarketCapLabel" text="" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                       <Rectangle fx:id="globalMarketCapSkeleton" width="120" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                                    </children>
+                                 </StackPane>
+                              </children>
+                           </VBox>
+                           <VBox spacing="5">
+                              <children>
+                                 <Label text="24h Volume" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                                 <StackPane>
+                                    <children>
+                                       <Label fx:id="globalVolumeLabel" text="" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                       <Rectangle fx:id="globalVolumeSkeleton" width="120" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                                    </children>
+                                 </StackPane>
+                              </children>
+                           </VBox>
+                           <VBox spacing="5">
+                              <children>
+                                 <Label text="Market Cap Change (24h)" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                                 <StackPane>
+                                    <children>
+                                       <Label fx:id="globalMarketCapChangeLabel" text="" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                       <Rectangle fx:id="globalMarketCapChangeSkeleton" width="100" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                                    </children>
+                                 </StackPane>
+                              </children>
+                           </VBox>
+                           <VBox spacing="5">
+                              <children>
+                                 <Label text="Active Cryptocurrencies" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                                 <StackPane>
+                                    <children>
+                                       <Label fx:id="activeCryptosLabel" text="" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                       <Rectangle fx:id="activeCryptosSkeleton" width="80" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                                    </children>
+                                 </StackPane>
+                              </children>
+                           </VBox>
+                           <VBox spacing="5">
+                              <children>
+                                 <Label text="Markets" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                                 <StackPane>
+                                    <children>
+                                       <Label fx:id="marketsLabel" text="" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                       <Rectangle fx:id="marketsSkeleton" width="80" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                                    </children>
+                                 </StackPane>
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+               
+               <!-- metrics cards row -->
+               <HBox spacing="15">
+                  <children>
+                     <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" spacing="5" HBox.hgrow="ALWAYS">
+                        <children>
+                           <Label text="ETH Supply" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                           <StackPane>
+                              <children>
+                                 <Label fx:id="ethSupplyLabel" text="" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                                 <Rectangle fx:id="ethSupplySkeleton" width="120" height="22" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                              </children>
+                           </StackPane>
+                        </children>
+                     </VBox>
+                     <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" spacing="5" HBox.hgrow="ALWAYS">
+                        <children>
+                           <Label text="Market Cap" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                           <StackPane>
+                              <children>
+                                 <Label fx:id="marketCapLabel" text="" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                                 <Rectangle fx:id="marketCapSkeleton" width="120" height="22" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                              </children>
+                           </StackPane>
+                        </children>
+                     </VBox>
+                     <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" spacing="5" HBox.hgrow="ALWAYS">
+                        <children>
+                           <Label text="TPS" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                           <StackPane>
+                              <children>
+                                 <Label fx:id="tpsLabel" text="" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                                 <Rectangle fx:id="tpsSkeleton" width="80" height="22" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                              </children>
+                           </StackPane>
+                        </children>
+                     </VBox>
+                     <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;" spacing="5" HBox.hgrow="ALWAYS">
+                        <children>
+                           <Label text="Latest Block" style="-fx-text-fill: #6b7280; -fx-font-size: 12px;" />
+                           <StackPane>
+                              <children>
+                                 <Label fx:id="latestBlockLabel" text="" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                                 <Rectangle fx:id="latestBlockSkeleton" width="100" height="22" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" visible="true" />
+                              </children>
+                           </StackPane>
+                        </children>
+                     </VBox>
+                  </children>
+               </HBox>
+               
+               <HBox spacing="15" alignment="TOP_LEFT" maxWidth="Infinity">
+                  <children>
+                     <!-- latest transactions -->
+                     <VBox spacing="10" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                        <children>
+                           <Label text="Latest Transactions" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                           <StackPane>
+                              <children>
+                                 <TableView fx:id="transactionTable" style="-fx-background-color: white; -fx-background-radius: 8;" maxWidth="Infinity">
+                                    <columns>
+                                       <TableColumn fx:id="txHashColumn" prefWidth="200.0" text="Hash" />
+                                       <TableColumn fx:id="txTypeColumn" prefWidth="120.0" text="Type" />
+                                       <TableColumn fx:id="txFromColumn" prefWidth="150.0" text="From" />
+                                       <TableColumn fx:id="txToColumn" prefWidth="150.0" text="To" />
+                                       <TableColumn fx:id="txValueColumn" prefWidth="100.0" text="Value" />
+                                       <TableColumn fx:id="txBlockColumn" prefWidth="80.0" text="Block" />
+                                       <TableColumn fx:id="txTimeColumn" prefWidth="120.0" text="Time" />
+                                    </columns>
+                                 </TableView>
+                                 <VBox fx:id="txSkeletonLoader" visible="false" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 10;" spacing="8">
+                                    <children>
+                                       <HBox spacing="10">
+                                          <children>
+                                             <Rectangle width="200" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                             <Rectangle width="150" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                             <Rectangle width="100" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                             <Rectangle width="80" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                             <Rectangle width="120" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                          </children>
+                                       </HBox>
+                                    </children>
+                                 </VBox>
+                              </children>
+                           </StackPane>
+                        </children>
+                     </VBox>
+                     
+                     <!-- latest blocks -->
+                     <VBox spacing="10" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                        <children>
+                           <Label text="Latest Blocks" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                           <StackPane>
+                              <children>
+                                 <TableView fx:id="blockTable" style="-fx-background-color: white; -fx-background-radius: 8;" maxWidth="Infinity">
+                                    <columns>
+                                       <TableColumn fx:id="blockNumberColumn" prefWidth="100.0" text="Block" />
+                                       <TableColumn fx:id="blockTxsColumn" prefWidth="80.0" text="TXs" />
+                                       <TableColumn fx:id="blockGasColumn" prefWidth="100.0" text="Gas Used" />
+                                       <TableColumn fx:id="blockTimeColumn" prefWidth="120.0" text="Time" />
+                                    </columns>
+                                 </TableView>
+                                 <VBox fx:id="blockSkeletonLoader" visible="false" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 10;" spacing="8">
+                                    <children>
+                                       <HBox spacing="10">
+                                          <children>
+                                             <Rectangle width="100" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                             <Rectangle width="80" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                             <Rectangle width="100" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                             <Rectangle width="120" height="20" arcWidth="4" arcHeight="4" styleClass="skeleton-shimmer" />
+                                          </children>
+                                       </HBox>
+                                    </children>
+                                 </VBox>
+                              </children>
+                           </StackPane>
+                        </children>
+                     </VBox>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+      </ScrollPane>
+   </center>
+</BorderPane>
+

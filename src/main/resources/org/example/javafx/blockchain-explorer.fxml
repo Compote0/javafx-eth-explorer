@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafx.controller.BlockchainExplorerController">
+   <top>
+      <VBox spacing="10.0" styleClass="container-fluid">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <Label text="🔗 Blockchain Explorer" styleClass="h1" />
+               </children>
+            </HBox>
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+               <children>
+                  <TextField fx:id="searchField" promptText="Search by address (0x...), transaction hash, or block number" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="searchButton" text="Search" styleClass="btn-primary" />
+               </children>
+            </HBox>
+            <HBox spacing="20.0" alignment="CENTER_LEFT">
+               <children>
+                  <Label fx:id="latestBlockLabel" text="Latest Block: Loading..." styleClass="h4" />
+                  <Label fx:id="totalTransactionsLabel" text="Total TXs: -" styleClass="h4" />
+                  <Label fx:id="averageGasPriceLabel" text="Avg Gas: -" styleClass="h4" />
+                  <ProgressIndicator fx:id="loadingIndicator" visible="false" prefHeight="20.0" prefWidth="20.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+         <items>
+            <VBox spacing="10.0">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <Label text="Transaction Feed" styleClass="h3" />
+                  <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="hashColumn" prefWidth="200.0" text="Hash" />
+                        <TableColumn fx:id="fromColumn" prefWidth="150.0" text="From" />
+                        <TableColumn fx:id="toColumn" prefWidth="150.0" text="To" />
+                        <TableColumn fx:id="valueColumn" prefWidth="100.0" text="Value" />
+                        <TableColumn fx:id="blockColumn" prefWidth="80.0" text="Block" />
+                        <TableColumn fx:id="timeColumn" prefWidth="150.0" text="Time" />
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            <VBox fx:id="resultBox" spacing="10.0" visible="false">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <Label text="Search Results" styleClass="h3" />
+                  <TextArea fx:id="resultTextArea" editable="false" VBox.vgrow="ALWAYS" wrapText="true" />
+               </children>
+            </VBox>
+         </items>
+      </SplitPane>
+   </center>
+</BorderPane>
+

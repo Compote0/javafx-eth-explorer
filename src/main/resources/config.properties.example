@@ -1,0 +1,22 @@
+# Blockchain Explorer API Configuration
+# Copy this file to config.properties and update with your own API keys
+# 
+# To get an Etherscan API key:
+# 1. Go to https://etherscan.io/apis
+# 2. Register for a free account
+# 3. Create an API key
+# 4. Copy the key and paste it below
+
+# Etherscan API Configuration
+etherscan.api.url=https://api.etherscan.io/v2/api
+etherscan.api.key=YOUR_API_KEY_HERE
+etherscan.chain.id=1
+
+# CoinGecko API Configuration (no key required for free tier)
+coingecko.api.url=https://api.coingecko.com/api/v3/simple/price
+
+# API Rate Limiting (in milliseconds)
+# Adjust these if you're hitting rate limits or want faster responses
+api.rate.limit.delay=400
+api.initial.delay=100
+

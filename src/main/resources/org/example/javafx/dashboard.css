@@ -1,0 +1,74 @@
+/* Global font rendering improvements */
+.root {
+  -fx-font-family: "System", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+    "Roboto", "Helvetica Neue", Arial, sans-serif;
+  -fx-font-smoothing-type: gray; /* Better font smoothing */
+}
+
+/* Skeleton shimmer animation using JavaFX animations */
+.skeleton-shimmer {
+  -fx-fill: #e5e7eb;
+}
+
+/* Search button styling */
+.search-button {
+  -fx-background-color: #4f46e5;
+  -fx-text-fill: white;
+  -fx-background-radius: 4;
+  -fx-cursor: hand;
+  -fx-font-weight: bold;
+  -fx-font-smoothing-type: gray;
+}
+
+.search-button:hover {
+  -fx-background-color: #4338ca;
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+}
+
+.search-button:pressed {
+  -fx-background-color: #3730a3;
+  -fx-scale-x: 0.98;
+  -fx-scale-y: 0.98;
+}
+
+/* ETH price change styling */
+.price-positive {
+  -fx-text-fill: #10b981;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-padding: 4px 8px;
+  -fx-background-color: #d1fae5;
+  -fx-background-radius: 4px;
+}
+
+.price-negative {
+  -fx-text-fill: #ef4444;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-padding: 4px 8px;
+  -fx-background-color: #fee2e2;
+  -fx-background-radius: 4px;
+}
+
+/* Back button styling */
+.back-button {
+  -fx-background-color: #6366f1;
+  -fx-text-fill: white;
+  -fx-cursor: hand;
+  -fx-background-radius: 4;
+  -fx-padding: 8px 16px;
+  -fx-font-weight: bold;
+}
+
+.back-button:hover {
+  -fx-background-color: #4f46e5;
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+}
+
+.back-button:pressed {
+  -fx-background-color: #4338ca;
+  -fx-scale-x: 0.98;
+  -fx-scale-y: 0.98;
+}
