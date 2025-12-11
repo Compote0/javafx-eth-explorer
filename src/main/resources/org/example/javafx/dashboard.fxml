@@ -6,6 +6,8 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.shape.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
 <BorderPane fx:id="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafx.controller.DashboardController" stylesheets="@dashboard.css" style="-fx-font-smoothing-type: gray;">
    <top>
@@ -17,6 +19,11 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="20">
                <children>
+                  <ImageView fx:id="etherscanLogo" fitHeight="40" fitWidth="40" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@etherscan.png" />
+                     </image>
+                  </ImageView>
                   <Label text="ETH Explorer" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
                   <Label fx:id="ethPriceLabel" text="ETH: Loading..." style="-fx-text-fill: white; -fx-font-size: 18px;" />
                   <Label fx:id="ethChangeLabel" text="" />

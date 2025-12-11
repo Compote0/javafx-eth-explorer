@@ -48,7 +48,7 @@ public class EtherscanRepository implements BlockchainRepository {
     private final HttpClient httpClient;
     private final Gson gson;
     
-    // thread-safe rate limiting using AtomicLong
+    // thread-safe rate limiting using AtomicLong to avoid 429 error Too many requests and doing multithreading safely
     private final AtomicLong lastRequestTime = new AtomicLong(0);
     
     public EtherscanRepository() throws BlockchainException {
@@ -210,6 +210,7 @@ public class EtherscanRepository implements BlockchainRepository {
 
                         // if this is a rate limit error, we retry after waiting
                         if (retryCount < maxRetries) {
+
                             // the wait time doubles with each retry to reduce repeated failed requests
                             long waitTime = baseWaitTime * (long) Math.pow(2, retryCount);
                             System.err.println("[EtherscanRepository] Rate limit detected: " + message + ". Waiting " + waitTime + "ms before retry " + (retryCount + 1) + "/" + maxRetries);
@@ -359,12 +360,16 @@ public class EtherscanRepository implements BlockchainRepository {
                     }
                     
                     if (result.has("gasUsed")) {
-                        var gasUsedHex = result.get("gasUsed").getAsString().substring(2);
-                        block.setGasUsed(new BigDecimal(new java.math.BigInteger(gasUsedHex, 16)));
+                        var gasUsedStr = result.get("gasUsed").getAsString();
+                        if (gasUsedStr != null && gasUsedStr.startsWith("0x") && gasUsedStr.length() > 2) {
+                            block.setGasUsed(new BigDecimal(new java.math.BigInteger(gasUsedStr.substring(2), 16)));
+                        }
                     }
                     if (result.has("gasLimit")) {
-                        var gasLimitHex = result.get("gasLimit").getAsString().substring(2);
-                        block.setGasLimit(new BigDecimal(new java.math.BigInteger(gasLimitHex, 16)));
+                        var gasLimitStr = result.get("gasLimit").getAsString();
+                        if (gasLimitStr != null && gasLimitStr.startsWith("0x") && gasLimitStr.length() > 2) {
+                            block.setGasLimit(new BigDecimal(new java.math.BigInteger(gasLimitStr.substring(2), 16)));
+                        }
                     }
                     block.setMiner(result.has("miner") ? result.get("miner").getAsString() : null);
                     

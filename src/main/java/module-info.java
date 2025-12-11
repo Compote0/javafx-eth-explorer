@@ -6,6 +6,7 @@ module org.example.javafx {
     requires org.kordamp.bootstrapfx.core;
     
     requires java.net.http;
+    requires java.desktop;
 
     // transitive so clients can access Gson types
     requires transitive com.google.gson;

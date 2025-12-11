@@ -3,10 +3,15 @@ package org.example.javafx;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.example.javafx.controller.DashboardController;
 
+import javax.imageio.ImageIO;
+import java.awt.Taskbar;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class BlockchainExplorerApp extends Application {
     @Override
@@ -27,6 +32,30 @@ public class BlockchainExplorerApp extends Application {
             controller.setScene(scene);
         }
         
+        // set application icon (window + dock/taskbar where supported)
+        try (InputStream iconStream = BlockchainExplorerApp.class.getResourceAsStream("etherscan.png")) {
+            if (iconStream != null) {
+                byte[] iconBytes = iconStream.readAllBytes();
+                Image fxIcon = new Image(new ByteArrayInputStream(iconBytes));
+                stage.getIcons().add(fxIcon);
+
+                // macOS dock / Windows taskbar icon for the app
+                try {
+                    Taskbar taskbar = Taskbar.getTaskbar();
+                    if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                        java.awt.Image awtIcon = ImageIO.read(new ByteArrayInputStream(iconBytes));
+                        if (awtIcon != null) {
+                            taskbar.setIconImage(awtIcon);
+                        }
+                    }
+                } catch (UnsupportedOperationException | SecurityException innerEx) {
+                    System.err.println("[BlockchainExplorerApp] Unable to set dock/taskbar icon: " + innerEx.getMessage());
+                }
+            } else {
+                System.err.println("[BlockchainExplorerApp] etherscan.png not found in resources.");
+            }
+        }
+
         stage.setTitle("Ethereum Explorer - Dashboard");
         stage.setScene(scene);
         stage.show();
