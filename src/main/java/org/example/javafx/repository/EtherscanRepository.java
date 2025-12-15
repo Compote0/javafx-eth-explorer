@@ -197,82 +197,88 @@ public class EtherscanRepository implements BlockchainRepository {
                     throw new BlockchainException("Empty response from API");
                 }
                 
-                // checking for API errors in the response
-                if (body.contains("\"status\":\"0\"") || body.contains("\"status\":0")) {
+                try {
+                    // parse JSON once to check for errors
                     var json = gson.fromJson(body, JsonObject.class);
-                    var message = json.has("message") ? json.get("message").getAsString() : "API returned error";
-                    var result = json.has("result") ? json.get("result").getAsString() : "";
                     
-                    // checking if it's a rate limit error
-                    if (message.toLowerCase().contains("rate limit") || 
-                        message.toLowerCase().contains("max calls per sec") ||
-                        result.toLowerCase().contains("rate limit")) {
-
-                        // if this is a rate limit error, we retry after waiting
-                        if (retryCount < maxRetries) {
-
-                            // the wait time doubles with each retry to reduce repeated failed requests
-                            long waitTime = baseWaitTime * (long) Math.pow(2, retryCount);
-                            System.err.println("[EtherscanRepository] Rate limit detected: " + message + ". Waiting " + waitTime + "ms before retry " + (retryCount + 1) + "/" + maxRetries);
-
-
-                            try {
-                                Thread.sleep(waitTime);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                throw new BlockchainException("Retry interrupted", e);
-                            }
-                            retryCount++;
-                            // retry the request
-                            continue;
-                        } else {
-                            throw new RateLimitException("Rate limit exceeded after " + maxRetries + " retries: " + message);
-                        }
-                    }
-                    
-                    // do not throw for "No transactions found" bc that's a valid response
-                    if (!message.contains("No transactions found") && 
-                        !message.contains("No record found") && 
-                        !message.equals("OK")) {
-                        throw new ApiException("API Error: " + message + (result.isEmpty() ? "" : " - " + result), 400);
-                    }
-                }
-                
-                // checking for JSON-RPC errors
-                if (body.contains("\"error\"")) {
-                    var json = gson.fromJson(body, JsonObject.class);
-                    if (json.has("error")) {
-                        var error = json.getAsJsonObject("error");
-                        var message = error.has("message") ? error.get("message").getAsString() : "Unknown error";
+                    // 1. check for standard Etherscan API "status" field
+                    // because "status":"0" means error
+                    if (json.has("status")) {
+                        var status = json.get("status");
+                        boolean isError = false;
                         
-                        // checking if it's a rate limit error
-                        if (message.toLowerCase().contains("rate limit") || 
-                            message.toLowerCase().contains("max calls per sec")) {
-
-                            if (retryCount < maxRetries) {
-                                long waitTime = baseWaitTime * (long) Math.pow(2, retryCount);
-                                System.err.println("[EtherscanRepository] Rate limit detected: " + message + ". Waiting " + waitTime + "ms before retry " + (retryCount + 1) + "/" + maxRetries);
-                                try {
+                        if (status.isJsonPrimitive()) {
+                            var statusStr = status.getAsString();
+                            if ("0".equals(statusStr)) {
+                                isError = true;
+                            }
+                        }
+                        
+                        if (isError) {
+                            var message = json.has("message") ? json.get("message").getAsString() : "API returned error";
+                            var result = json.has("result") && !json.get("result").isJsonNull() 
+                                    ? (json.get("result").isJsonPrimitive() ? json.get("result").getAsString() : "") 
+                                    : "";
+                            
+                            // checking for rate limit error in message or result
+                            if (message.toLowerCase().contains("rate limit") || 
+                                message.toLowerCase().contains("max calls per sec") ||
+                                result.toLowerCase().contains("rate limit")) {
+                                
+                                if (retryCount < maxRetries) {
+                                    long waitTime = baseWaitTime * (long) Math.pow(2, retryCount);
+                                    System.err.println("[EtherscanRepository] Rate limit detected: " + message + ". Waiting " + waitTime + "ms before retry " + (retryCount + 1) + "/" + maxRetries);
+                                    
                                     Thread.sleep(waitTime);
-                                } catch (InterruptedException e) {
-                                    Thread.currentThread().interrupt();
-                                    throw new BlockchainException("Retry interrupted", e);
+                                    retryCount++;
+                                    continue;
+                                } else {
+                                    throw new RateLimitException("Rate limit exceeded after " + maxRetries + " retries: " + message);
                                 }
-                                retryCount++;
-                                continue;
-                            } else {
-                                throw new RateLimitException("Rate limit exceeded after " + maxRetries + " retries: " + message);
                             }
+                            
+                    // do not throw for "No transactions found" bc that's a valid response
+                            if (!message.contains("No transactions found") && 
+                                !message.contains("No record found") && 
+                                !message.equals("OK")) {
+                                throw new ApiException("API Error: " + message + (result.isEmpty() ? "" : " - " + result), 400);
+                            }
+                            // if it is "No transactions found", we continue to return the body
                         }
-                        
-                        throw new ApiException("JSON-RPC Error: " + message, 400);
                     }
+                    
+                    // 2. checking for JSON-RPC style "error" field
+                    if (json.has("error")) {
+                         var errorElement = json.get("error");
+                         if (errorElement.isJsonObject()) {
+                             var errorObj = errorElement.getAsJsonObject();
+                             var message = errorObj.has("message") ? errorObj.get("message").getAsString() : "Unknown error";
+                             
+                             if (message.toLowerCase().contains("rate limit") || 
+                                 message.toLowerCase().contains("max calls per sec")) {
+                                 
+                                 if (retryCount < maxRetries) {
+                                     long waitTime = baseWaitTime * (long) Math.pow(2, retryCount);
+                                     System.err.println("[EtherscanRepository] Rate limit detected: " + message + ". Waiting " + waitTime + "ms before retry " + (retryCount + 1) + "/" + maxRetries);
+                                     Thread.sleep(waitTime);
+                                     retryCount++;
+                                     continue;
+                                 } else {
+                                     throw new RateLimitException("Rate limit exceeded after " + maxRetries + " retries: " + message);
+                                 }
+                             }
+                             
+                             throw new ApiException("JSON-RPC Error: " + message, 400);
+                         }
+                    }
+                    
+                } catch (com.google.gson.JsonSyntaxException e) {
+                    System.err.println("[EtherscanRepository] Warning: Response is not valid JSON: " + body.substring(0, Math.min(body.length(), 100)));
                 }
                 
                 return body;
                 
             } catch (RateLimitException e) {
-                // handle rate limit exception
                 if (retryCount < maxRetries) {
                     long waitTime = baseWaitTime * (long) Math.pow(2, retryCount);
                     System.err.println("[EtherscanRepository] Rate limit exception: " + e.getMessage() + ". Waiting " + waitTime + "ms before retry " + (retryCount + 1) + "/" + maxRetries);
@@ -285,8 +291,6 @@ public class EtherscanRepository implements BlockchainRepository {
                     retryCount++;
                     continue;
                 } else {
-
-                    // rethrow if max retries is reached
                     throw e;
                 }
 
@@ -298,7 +302,6 @@ public class EtherscanRepository implements BlockchainRepository {
             }
         }
         
-        // just in case but theoretically will not reach this case
         throw new BlockchainException("Request failed after " + maxRetries + " retries");
     }
     
